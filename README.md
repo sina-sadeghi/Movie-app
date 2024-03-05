@@ -1,40 +1,28 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Movie Search Website
 
-## Getting Started
+This is a simple movie search website built with React, utilizing Redux for state management. The website features a clean and dynamic interface, making it easy for users to search for and explore movie details.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- At the top of the site, you'll find a menu icon and a search field for entering movie titles. Clicking the menu icon toggles its appearance, providing a smooth user experience. Redux is integrated into the source code, although its usage is minimal due to the site's relatively small scale.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Upon typing a movie title and hitting enter or clicking the search button, the website connects to the "omdbapi" server to fetch and display information on the top 10 movies related to the search.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- Key points to note:
+    - React-hooks-form is used for form handling.
+    - A loading indicator appears after clicking the search button, preventing multiple requests to the server with rapid clicks.
+    - In case of no internet connection or server error, an alert informs the user about the issue.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- Once the initial search is complete, the website displays posters, names, and release years of the movies. If a name is too long, it is truncated with "..." and reveals the full name and year when the user hovers over it. Each movie entry also includes a bookmark icon, allowing users to save their favorite movies. Saved movies are stored in local storage since no dedicated server is designed for this purpose.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- Scrolling down automatically triggers requests to the server for additional batches of movies, providing continuous content loading. This process repeats as the user scrolls further down to reveal more movies.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Clicking on a movie triggers a loading animation, and the details of the selected movie are fetched from the server. If the server responds successfully, a modal displays additional information, and the background is temporarily disabled.
 
-## Learn More
+- Movie details are presented with icons for various information such as director, cast, release date, and more. Hovering over these icons reveals the corresponding details. On laptop screens, full descriptions are visible.
 
-To learn more about Next.js, take a look at the following resources:
+- The website is designed to be dynamic for different languages, and the connection to any server with any account is handled dynamically.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Proper use of meta tags and headers contributes to better SEO.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This React-based movie search website is available at [https://movie.liara.run/](https://movie.liara.run/). You can find the complete source code on [GitHub](https://github.com/sina-sadeghi/Movie-app).
