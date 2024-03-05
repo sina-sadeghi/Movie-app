@@ -1,118 +1,177 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
+import React, {useEffect, useState} from "react";
+import {useForm, SubmitHandler} from "react-hook-form"
+import OmdbapiAPI from '@/core/api/OmdbapiAPI'
+import Card, {selfCardInterface} from "@/shared/Card";
+import Modal, {modelInterface} from "@/shared/Modal";
+import {disablePageScroll, enablePageScroll} from 'scroll-lock';
+import widthWindow from "@/core/constans/WidthWindow";
+import {getSavesStorage} from "@/core/services/Storage";
+import Language from "@/core/services/Language";
+import HeaderSide from "../shared/HeaderSide";
+import {connect} from "react-redux";
+import {MenuPopup} from "@/actions/popup-action";
 
-const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
-  return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+type Inputs = {
+    title: string
 }
+
+interface HomeInterface {
+    widthSize: string,
+    alert: (type: number, text: string) => void,
+    loading: (value: boolean) => void,
+    menuPopupState: { menuPopupState?: boolean },
+    OnMenuPopup: (state: boolean) => void
+}
+
+function Home({widthSize, alert, loading, menuPopupState, OnMenuPopup}: HomeInterface) {
+
+    const [result, setResult] = useState<selfCardInterface[]>([]);
+    const [page, setPage] = useState(1)
+    const [total, setTotal] = useState(-1)
+    const [showModal, setShowModal] = useState(false)
+    const [selectedMovie, setSelectedMovie] = useState<modelInterface | null>(null)
+    const [saves, setSaves] = useState<string[]>([])
+    const [showMenu, setShowMenu] = useState(false)
+
+    useEffect(() => {
+        if (menuPopupState?.menuPopupState !== showMenu)
+            setShowMenu(menuPopupState?.menuPopupState || false)
+    }, [showMenu, menuPopupState])
+
+
+    const changePage = async () => {
+        if (page * 10 < total) {
+            setPage(page + 1)
+            return await getMovies('s=' + getValues('title'), page + 1).then(r => {
+                if (r.Response === "True" && r.Search.length > 0) {
+                    setResult([...result, ...r.Search])
+                }
+            })
+        }
+    }
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollHeight = document.documentElement.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight;
+            const scrollY = window.scrollY;
+            const distanceToBottom = scrollHeight - scrollY - clientHeight;
+
+            if (distanceToBottom <= 50) {
+                console.log('Approaching the bottom of the scroll!');
+                changePage()
+            }
+        };
+
+        if (typeof window !== 'undefined') {
+            window.addEventListener('scroll', handleScroll);
+            return () => {
+                window.removeEventListener('scroll', handleScroll);
+            };
+        }
+    }, [changePage, total, page, result]);
+
+
+    const getMovies = async (title: string, page: number = 1) => {
+        loading(true)
+        return await OmdbapiAPI(title, page).then(r => {
+            console.log(r)
+            loading(false)
+            if (r?.Response) {
+                if (r.Response === "False")
+                    alert(1, r.Error)
+
+                return r
+            }
+            alert(1, Language('something-wrong'))
+            return {Response: "False"}
+        })
+    }
+
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+        getValues
+    } = useForm<Inputs>()
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+
+        return await getMovies('s=' + data.title, 1).then(r => {
+            if (r.Response === "True" && r.Search.length > 0) {
+                setTotal(r.totalResults)
+                setResult(r.Search)
+
+                if (getSavesStorage() && getSavesStorage().length > 0)
+                    setSaves(getSavesStorage())
+            }
+        })
+
+    }
+
+
+    const handleSelectMovie = async (id: string) => {
+        return await getMovies('i=' + id).then(r => {
+            if (r.Response === "True") {
+                setSelectedMovie(r)
+                setShowModal(true)
+                disablePageScroll()
+            }
+        })
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
+        enablePageScroll()
+    }
+
+    const handleClickMenu = () => {
+        OnMenuPopup(!showMenu)
+    }
+
+
+    return <div onScroll={e => console.log(e)}>
+
+
+        <HeaderSide title={Language('home-header-title')}/>
+
+        <div onScroll={e => console.log(e)}>
+
+            <div className="fixed left-4 cursor-pointer hover:bg-slate-600 px-1 rounded"
+                 onClick={() => handleClickMenu()}>
+                <i className={`fa-light fa-${showMenu ? 'xmark px-1' : 'bars'}`}/>
+            </div>
+
+            {showModal && <Modal selectedMovie={selectedMovie} widthSize={widthSize} closeModal={closeModal}/>}
+
+            {<form onSubmit={handleSubmit(onSubmit)} className={'my-4 text-center'}>
+                {widthSize === widthWindow[0] && <span
+                    className={' block md:inline md:mr-4 text-slate-200 text-lg'}>{Language('home_search_label')}</span>}
+                <input {...register("title", {required: true})} placeholder={Language('home_search_placeholder')}
+                       className={'outline-0 rounded text-slate-700 p-1 m-1 w-56 md:w-64 border bg-slate-200 border-slate-600'}/>
+                <input type="submit" value={Language('home_search_button')} tabIndex={0}
+                       className={'rounded bg-blue-500 text-slate-100 px-2 py-1 cursor-pointer border border-blue-800 outline-0 focus:border-slate-100'}/>
+            </form>}
+
+            {!!result && result.length > 0 && <div
+                className="p-2 md:p-6 flex flex-wrap justify-around md:grid gap-2 md:gap-6 border border-slate-700 mx-2 rounded-sm"
+                style={{gridTemplateColumns: widthSize === widthWindow[0] ? 'repeat(auto-fill, minmax(216px, 1fr))' : ''}}>
+                {result.map((movie, key) => <Card alert={alert} setSaves={setSaves} saves={saves} movie={movie}
+                                                  key={key} widthSize={widthSize} click={handleSelectMovie}/>)}
+            </div>}
+        </div>
+    </div>
+}
+
+
+const mapStateToProps = (state: { PopupReducer: object }) => {
+    return {
+        menuPopupState: state.PopupReducer,
+    };
+};
+
+const mapDispatchToProps = (dispatch: (a: { type: string, payload: { state: any } }) => void) => ({
+    OnMenuPopup: (state: boolean) => dispatch(MenuPopup(state)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
